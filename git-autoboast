@@ -2,6 +2,11 @@
 #
 # Tweet about the last commit in a Git repo.
 #
+# Requires an application which tweets a string to be in the user's path.
+# (my twitterminal does the job)
+#
+
+twitterer="$HOME/bin/twitterminal"
 
 # HTTPS because we send them to GitHub to view the commit
 short_url_length_https=23
@@ -44,4 +49,4 @@ fi
 
 message_final="\"${last_message}\" - commit $last_hash_short by $last_author @ raehik/$git_root (https://github.com/raehik/$git_root/commit/$last_hash_full)"
 
-tweet "$message_final"
+$twitterer "$message_final"
