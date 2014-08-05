@@ -33,9 +33,6 @@ if [ $message_length -gt 140 ]; then
     # find how many chars we're over by
     chars_over=$(($message_length - 140))
 
-    # debug message
-    echo "too long by $chars_over - shortening commit message..."
-
     # set how much of message to keep
     # minus an extra 3 so I can append '...'
     # ...minus another 1 because of zero-based indexing T_T
@@ -46,13 +43,5 @@ if [ $message_length -gt 140 ]; then
 fi
 
 message_final="\"${last_message}\" - commit $last_hash_short by $last_author @ raehik/$git_root (https://github.com/raehik/$git_root/commit/$last_hash_full)"
-
-echo "message: $message"
-echo "message length: $messag__length"
-echo "commit message: $last_message"
-echo "commit message length: $last_message_length"
-echo "chars of commit message to keep: $chars_to_keep"
-echo "new commit message: $last_message"
-echo "final message: $message_final"
 
 tweet "$message_final"
