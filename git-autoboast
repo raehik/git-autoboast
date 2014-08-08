@@ -6,8 +6,12 @@
 # (my twitterminal does the job)
 #
 
+# program which sends tweet
+# must tweet argument 1 & be smart about any length checking
 twitterer="$HOME/bin/twitterminal"
 
+# GitHub user who 'owns' the repo
+github_user="raehik"
 # HTTPS because we send them to GitHub to view the commit
 short_url_length_https=23
 
@@ -25,7 +29,7 @@ last_message="$(git log -1 --pretty=%s)"
 last_author="$(git log -1 --pretty=%aN)"
 
 # current message w/o URL (shortened by Twitter to 23 chars for HTTPS)
-message="\"${last_message}\" - commit $last_hash_short by $last_author @ raehik/$git_root ()"
+message="\"${last_message}\" - commit $last_hash_short by $last_author @ $github_user/$git_root ()"
 
 # get full message length, adding t.co URL
 message_length=$(($(echo -n "$message" | wc -c) + $short_url_length_https))
@@ -47,6 +51,6 @@ if [ $message_length -gt 140 ]; then
     last_message="${last_message:0:$chars_to_keep}..."
 fi
 
-message_final="\"${last_message}\" - commit $last_hash_short by $last_author @ raehik/$git_root (https://github.com/raehik/$git_root/commit/$last_hash_full)"
+message_final="\"${last_message}\" - commit $last_hash_short by $last_author @ $github_user/$git_root (https://github.com/$github_user/$git_root/commit/$last_hash_full)"
 
 $twitterer "$message_final"
