@@ -53,4 +53,5 @@ fi
 
 message_final="\"${last_message}\" - commit $last_hash_short by $last_author @ $github_user/$git_root (https://github.com/$github_user/$git_root/commit/$last_hash_full)"
 
+echo "Tweeting: \"$message_final\""
 $twitterer "$message_final"
