@@ -31,7 +31,7 @@ If no commit hash is provided, the most recent commit is assumed.
 EOF
 }
 
-while getopts "cdh" opt; do
+while getopts "c:dh" opt; do
     case $opt in
         c) # choose commit
             commit_hash="$OPTARG"
