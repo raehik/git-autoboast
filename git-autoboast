@@ -7,30 +7,65 @@
 #
 
 # program which sends tweet
-# must tweet argument 1 & be smart about any length checking
+# must tweet argument 1 & be smart about any length-checking (because of how
+# Twitter shortens URLs)
 twitterer="$HOME/bin/twitterminal"
 
-# GitHub user who 'owns' the repo
+# GitHub user who the repo belongs to
 github_user="raehik"
-# HTTPS because we send them to GitHub to view the commit
+
+# we do our own length-checking. Twitter shortens all HTTPS URLs to 23
+# characters: HTTPS because we send them to GitHub to view the commit
 short_url_length_https=23
 
-# if we're given an argument, assume it's a git repo and cd to it
-# otherwise we'll hope that we're already in a git repo ;)
-if [ -n "$1" ]; then
-    cd "$1"
+usage() {
+    cat <<EOF
+Usage: ${0##*/} [options]
+Tweet about a commit you made on a Git[Hub] project.
+If no commit hash is provided, the most recent commit is assumed.
+
+  Options:
+    -c              commit hash to tweet about (otherwise, last commit)
+    -d              Git repository directory
+    -h              display this help message
+EOF
+}
+
+while getopts "cdh" opt; do
+    case $opt in
+        c) # choose commit
+            commit_hash="$OPTARG"
+            ;;
+        d) # change directory
+            cd "$OPTARG"
+            ;;
+        h) # display usage message
+            usage
+            exit 0
+            ;;
+    esac
+done
+
+if [ ! "$commit_hash" ]; then
+    echo "no commit provided -- using HEAD"
+    commit_hash="HEAD"
 fi
 
 # get a ton of info
+# TODO: make these commands take only a short hash as input, so we can generate
+#       a tweet for *any* commit
+# git_root assumes that the GitHub project name == the Git directory name
+# TODO: add option to specify GitHub project name, I guess? will I ever use it?
 git_root="$(basename "$(git rev-parse --show-toplevel)")"
-last_hash_short="$(git rev-parse --short HEAD)"
-last_hash_full="$(git rev-parse HEAD)"
-last_message="$(git log -1 --pretty=%s)"
-last_author="$(git log -1 --pretty=%aN)"
+last_hash_short="$(git rev-parse --short $commit_hash)"
+last_hash_full="$(git rev-parse $commit_hash)"
+last_message="$(git log $commit_hash -1 --pretty=%s)"
+last_author="$(git log $commit_hash -1 --pretty=%aN)"
 
-# check that actually worked
+# should check that all work, but this'll do for now (dunno what errors you get
+# if you provide an incorrect hash)
 if [ $? -ne 0 ]; then
-    echo "${0##*/}: error: Git failed. Are you in a repository, and do you have Git installed?"
+    echo "${0##*/}: error: a Git command failed. Do you have Git installed, are you in a repository, and does the commit hash you provided exist?"
     exit 1
 fi
 
