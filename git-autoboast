@@ -11,7 +11,7 @@
 # Twitter shortens URLs)
 twitterer="$HOME/bin/twitterminal"
 
-# GitHub user who the repo belongs to
+# GitHub user whom the repo belongs to
 github_user="raehik"
 
 # we do our own length-checking. Twitter shortens all HTTPS URLs to 23
